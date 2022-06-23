@@ -19,15 +19,17 @@ func StartFunc(context service.ServiceContext) {
 
 	log("Service run as node: " + node)
 
-	type Result struct {
-		ID        int
-		Handphone string
+	db := context.Database()
+	result, e := db.Get("SELECT id, handphone FROM user WHERE handphone = ?", "62813813825254")
+	if e != nil {
+		log(e.Error())
 	}
-	var result Result
-	db := context.DB()
-	db.Raw("SELECT id, handphone FROM user WHERE id = ?", 14).Scan(&result)
 
-	fmt.Println(result)
+	if result == nil {
+		log("user not found")
+	} else {
+		log("User ID: " + result.String("id") + ", Phone: " + result.String("handphone"))
+	}
 
 	count := 0
 	for {

@@ -1,19 +1,34 @@
 package services
 
 import (
-	mysql "gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"log"
+
+	"github.com/eqto/config"
+	"github.com/eqto/dbm"
+	_ "github.com/eqto/dbm/driver/mysql"
 )
 
 var (
-	Db *gorm.DB
+	db *dbm.Connection
 )
 
 func OpenDb() {
-	dsn := "root:@tcp(127.0.0.1:3306)/gowes?charset=utf8mb4&parseTime=True&loc=Local"
-	var err error
-	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
+	hostname := config.Get(`database.hostname`)
+	username := config.Get(`database.username`)
+	password := config.Get(`database.password`)
+	port := config.GetInt(`database.port`)
+	name := config.Get(`database.database`)
+
+	cn, e := dbm.Connect(dbm.Config{
+		DriverName: "mysql",
+		Hostname:   hostname,
+		Port:       port,
+		Username:   username,
+		Password:   password,
+		Name:       name,
+	})
+	if e != nil {
+		log.Fatal(e)
 	}
+	db = cn
 }

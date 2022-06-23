@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"syscall"
 
+	config "github.com/eqto/config"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +65,7 @@ func (s *Service) Start(startFunc ServiceHandler) {
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			command := exec.Command(`./`+s.appName, "run", "--node="+strconv.Itoa(s.context.Node))
-			outfile, err := os.OpenFile(s.getFilename(false)+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+			outfile, err := os.OpenFile(s.LogFilename(), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 			if err != nil {
 				panic(err)
 			}
@@ -77,7 +78,7 @@ func (s *Service) Start(startFunc ServiceHandler) {
 
 			pid := command.Process.Pid
 
-			f, err := os.Create(s.getFilename(true) + ".pid")
+			f, err := os.Create(s.PidFilename())
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -117,14 +118,11 @@ func (s *Service) SetVersion(version string) {
 func (s *Service) Run() {
 	s.rootCmd.Execute()
 }
-func (s *Service) getFilename(withNode bool) string {
-	a := ServiceRuntimePath + "/" + s.appName
-
-	if withNode {
-		a = a + "-" + strconv.Itoa(s.context.Node)
-	}
-
-	return a
+func (s *Service) LogFilename() string {
+	return ServiceRuntimePath + "/logs/" + s.appName + ".log"
+}
+func (s *Service) PidFilename() string {
+	return ServiceRuntimePath + "/" + s.appName + "-" + strconv.Itoa(s.context.Node) + ".pid"
 }
 func (s *Service) prepareStart() {
 	if _, err := os.Stat(ServiceRuntimePath); os.IsNotExist(err) {
@@ -132,9 +130,19 @@ func (s *Service) prepareStart() {
 			fmt.Println(err)
 		}
 	}
+
+	if _, err := os.Stat(ServiceRuntimePath + "/logs"); os.IsNotExist(err) {
+		if err := os.Mkdir(ServiceRuntimePath+"/logs", os.ModePerm); err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	if e := config.Open(`config/main.conf`); e != nil {
+		log.Fatal(e)
+	}
 }
 func (s *Service) shutdown() {
-	pid, err := ioutil.ReadFile(s.getFilename(true) + ".pid")
+	pid, err := ioutil.ReadFile(s.PidFilename())
 
 	if err != nil {
 		log.Fatal(err)
@@ -144,7 +152,7 @@ func (s *Service) shutdown() {
 	cmd.Run()
 
 	// delete pid file
-	e := os.Remove(s.getFilename(true) + ".pid")
+	e := os.Remove(s.PidFilename())
 	if e != nil {
 		log.Fatal(e)
 	}
