@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	service "github.com/budimanlai/go-service"
+	service "github.com/budimanlai/go-cli-service"
 )
 
 var (

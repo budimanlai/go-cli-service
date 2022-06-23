@@ -1,4 +1,4 @@
-module github.com/budimanlai/go-service
+module github.com/budimanlai/go-cli-service
 
 go 1.18
 

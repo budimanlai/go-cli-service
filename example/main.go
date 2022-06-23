@@ -1,7 +1,7 @@
 package main
 
 import (
-	service "github.com/budimanlai/go-service"
+	service "github.com/budimanlai/go-cli-service"
 )
 
 func main() {
