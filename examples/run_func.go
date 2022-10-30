@@ -7,7 +7,10 @@ import (
 )
 
 func StartService(ctx *services.Service) {
-	ctx.Log("Run with token:", ctx.Args.GetString("token"))
+	ctx.Log("Run with args:", ctx.Args.GetRawArgs())
+	ctx.Log("Port:", ctx.Args.GetInt("port"))
+	ctx.Log("Node:", ctx.Args.GetInt("node"))
+	ctx.Log("Token:", ctx.Args.GetString("token"))
 
 	result, e := ctx.Db.Get("select version() as versi")
 	if e != nil {

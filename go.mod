@@ -10,5 +10,6 @@ require (
 	github.com/budimanlai/go-args v0.0.1
 	github.com/budimanlai/go-config v0.0.1
 	github.com/eqto/dbm v0.14.6
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
 )
+
+require github.com/go-sql-driver/mysql v1.6.0 // indirect

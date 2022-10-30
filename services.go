@@ -69,10 +69,13 @@ func (s *Service) Start() error {
 			return e
 		}
 
-		command := exec.Command(`./`+s.Args.ScriptName, "run")
+		a := s.Args.GetRawArgs()
+		a[0] = "run"
+		command := exec.Command(`./`+s.Args.ScriptName, a...)
 		outfile, err := os.OpenFile(s.LogService.GetLogFile(), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		fmt.Println("err:", err)
 		if err != nil {
-			return e
+			return err
 		}
 		defer outfile.Close()
 		command.Stdout = outfile
