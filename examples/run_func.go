@@ -8,9 +8,6 @@ import (
 
 func StartService(ctx *services.Service) {
 	ctx.Log("Run with args:", ctx.Args.GetRawArgs())
-	ctx.Log("Port:", ctx.Args.GetInt("port"))
-	ctx.Log("Node:", ctx.Args.GetInt("node"))
-	ctx.Log("Token:", ctx.Args.GetString("token"))
 
 	result, e := ctx.Db.Get("select version() as versi")
 	if e != nil {
@@ -19,11 +16,15 @@ func StartService(ctx *services.Service) {
 
 	ctx.Log("Versi DB:", result.String("versi"))
 
+	ctx.Ping.Start()
+
 	for {
+		ctx.Ping.Update()
 		ctx.Log("Sleep...")
 		time.Sleep(2 * time.Second)
 
 		if ctx.IsStopped {
+			ctx.Ping.Stop()
 			ctx.Log("Exit from loop StartService")
 			break
 		}

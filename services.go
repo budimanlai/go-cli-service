@@ -11,6 +11,7 @@ import (
 
 	goargs "github.com/budimanlai/go-args"
 	goconfig "github.com/budimanlai/go-config"
+	goping "github.com/budimanlai/go-services-ping"
 	"github.com/eqto/dbm"
 	_ "github.com/eqto/dbm/driver/mysql"
 )
@@ -25,15 +26,12 @@ type Service struct {
 	Config     *goconfig.Config
 	Db         *dbm.Connection
 	LogService *LogService
+	Ping       *goping.ServicePing
 
 	configFile []string
 }
 
 type ServiceHandler func(ctx *Service)
-
-const (
-	YYYYMMDDHHMMSS = "2006-01-02 15:04:05"
-)
 
 func NewService(configFile ...string) *Service {
 	return &Service{
@@ -134,20 +132,24 @@ func (s *Service) openDatabase() error {
 	return nil
 }
 func (s *Service) run() error {
-	if len(s.configFile) != 0 {
-		s.Config = &goconfig.Config{}
-		e := s.Config.Open(s.configFile...)
-		if e != nil {
-			return e
-		}
-
-		e1 := s.openDatabase()
-		if e1 != nil {
-			return e1
-		}
+	s.Config = &goconfig.Config{}
+	e := s.Config.Open(s.configFile...)
+	if e != nil {
+		return e
 	}
 
+	e1 := s.openDatabase()
+	if e1 != nil {
+		return e1
+	}
+
+	s.Ping = &goping.ServicePing{
+		Config:      s.Config,
+		Indentifier: s.Args.ScriptName,
+	}
+	s.Ping.OpenDatabase()
 	s.signalListener()
+
 	s.IsStopped = false
 	s.starFunc(s)
 

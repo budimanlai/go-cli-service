@@ -11,8 +11,9 @@ var (
 )
 
 const (
-	RuntimePath string = "runtime"
-	LogPath     string = RuntimePath + "/logs"
+	RuntimePath    string = "runtime"
+	LogPath        string = RuntimePath + "/logs"
+	YYYYMMDDHHMMSS string = "2006-01-02 15:04:05"
 )
 
 type LogService struct {

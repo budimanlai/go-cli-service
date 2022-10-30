@@ -1,3 +1,9 @@
+github.com/budimanlai/go-args v0.0.1 h1:4prgT5lq4NdUU7GSrb7v5gGYajZD0v9v1s79DAWjwuI=
+github.com/budimanlai/go-args v0.0.1/go.mod h1:b0bfforNqR+7uI0xslP67t+5pztrU0vUnCTzeqXnS8o=
+github.com/budimanlai/go-config v0.0.1 h1:gmp7ruxdvwBBCcJq7dg+CWV8KHXo+3H1tj79xJOcZps=
+github.com/budimanlai/go-config v0.0.1/go.mod h1:0sH0WYBNKewFlo9Tl+Xi9CSwJ5IC7kEEgqvDluPEpXc=
+github.com/budimanlai/go-services-ping v0.0.1 h1:uzSf0agM3IR5ThO+CAdIqVi9qjH2q8+RQjKtAXCU2gs=
+github.com/budimanlai/go-services-ping v0.0.1/go.mod h1:tcyKBW9fICqrbxIF4xVSArb5FL/EdgvbGwmKbbeb7gM=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/eqto/dbm v0.14.6 h1:TCTwnJfUCP11KQfMqw0N1gJ2z/HYLugbM+QSX+uHItM=
