@@ -2,10 +2,12 @@ package services
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"os/signal"
+	"strconv"
 	"syscall"
-	"time"
 
 	goargs "github.com/budimanlai/go-args"
 	goconfig "github.com/budimanlai/go-config"
@@ -14,14 +16,15 @@ import (
 )
 
 type Service struct {
-	Version   string
-	AppName   string
-	IsStopped bool
-	starFunc  ServiceHandler
-	stopFunc  ServiceHandler
-	Args      *goargs.Args
-	Config    *goconfig.Config
-	Db        *dbm.Connection
+	Version    string
+	AppName    string
+	IsStopped  bool
+	starFunc   ServiceHandler
+	stopFunc   ServiceHandler
+	Args       *goargs.Args
+	Config     *goconfig.Config
+	Db         *dbm.Connection
+	LogService *LogService
 
 	configFile []string
 }
@@ -49,16 +52,70 @@ func (s *Service) Start() error {
 		fmt.Println(s.AppName, "\nVersi", s.Version)
 		break
 	case "run":
-		e := s.run()
+		s.LogService = NewLogService(s.Args.ScriptName)
+		e := s.LogService.Init()
 		if e != nil {
 			return e
 		}
+		e1 := s.run()
+		if e1 != nil {
+			return e1
+		}
 		break
 	case "start":
-		fmt.Println("Start")
+		s.LogService = NewLogService(s.Args.ScriptName)
+		e := s.LogService.Init()
+		if e != nil {
+			return e
+		}
+
+		command := exec.Command(`./`+s.Args.ScriptName, "run")
+		outfile, err := os.OpenFile(s.LogService.GetLogFile(), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			return e
+		}
+		defer outfile.Close()
+		command.Stdout = outfile
+
+		if e := command.Start(); e != nil {
+			return e
+		}
+
+		pid := command.Process.Pid
+
+		f, err := os.Create(s.LogService.GetPidFile())
+		if err != nil {
+			return err
+		}
+
+		defer f.Close()
+		_, err2 := f.WriteString(strconv.Itoa(pid))
+		if err2 != nil {
+			return err2
+		}
+
 		break
 	case "stop":
-		fmt.Println("Stop")
+		s.LogService = NewLogService(s.Args.ScriptName)
+		e := s.LogService.Init()
+		if e != nil {
+			return e
+		}
+
+		pid, err := ioutil.ReadFile(s.LogService.GetPidFile())
+
+		if err != nil {
+			return err
+		}
+
+		cmd := exec.Command("kill", string(pid))
+		cmd.Run()
+
+		// delete pid file
+		e1 := os.Remove(s.LogService.GetPidFile())
+		if e1 != nil {
+			return e1
+		}
 		break
 	}
 
@@ -104,10 +161,7 @@ func (s *Service) StopHandler(f ServiceHandler) {
 }
 
 func (s *Service) Log(a ...interface{}) {
-	now := time.Now().UTC()
-	date := now.Format(YYYYMMDDHHMMSS)
-	fmt.Print("[" + date + "] ")
-	fmt.Println(a...)
+	s.LogService.Log(a...)
 }
 
 func (s *Service) signalListener() {
