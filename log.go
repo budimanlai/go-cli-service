@@ -44,7 +44,7 @@ func (l *LogService) Init() error {
 }
 
 func (l *LogService) Log(a ...interface{}) {
-	now := time.Now().UTC()
+	now := time.Now()
 	date := now.Format(YYYYMMDDHHMMSS)
 	fmt.Print("[" + date + "] ")
 	fmt.Println(a...)
