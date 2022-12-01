@@ -131,7 +131,7 @@ func (s *Service) openDatabase() error {
 		return nil
 	}
 	cn, e := dbm.Connect("mysql", s.Config.GetString("database.hostname"), s.Config.GetInt("database.port"),
-		s.Config.GetString("database.username"), s.Config.GetString("database.password"), s.Config.GetString("database.name"))
+		s.Config.GetString("database.username"), s.Config.GetString("database.password"), s.Config.GetString("database.database"))
 	if e != nil {
 		return e
 	}
