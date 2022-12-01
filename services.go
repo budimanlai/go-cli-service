@@ -122,7 +122,14 @@ func (s *Service) Start() error {
 	return nil
 }
 
+func (s *Service) SetDatabase(db *dbm.Connection) {
+	s.Db = db
+}
+
 func (s *Service) openDatabase() error {
+	if s.Db != nil {
+		return nil
+	}
 	cn, e := dbm.Connect("mysql", s.Config.GetString("database.hostname"), s.Config.GetInt("database.port"),
 		s.Config.GetString("database.username"), s.Config.GetString("database.password"), s.Config.GetString("database.name"))
 	if e != nil {
