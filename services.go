@@ -34,15 +34,30 @@ type Service struct {
 type ServiceHandler func(ctx *Service)
 
 func NewService(configFile ...string) *Service {
-	return &Service{
+	srv := &Service{
 		configFile: configFile,
 	}
+	srv.Config = &goconfig.Config{}
+	e := srv.Config.Open(srv.configFile...)
+
+	if e != nil {
+		panic(e)
+	}
+
+	srv.Args = &goargs.Args{}
+	srv.Args.Parse()
+
+	srv.LogService = NewLogService(srv.Args.ScriptName)
+	e1 := srv.LogService.Init()
+	if e1 != nil {
+		panic(e1)
+	}
+
+	return srv
 }
 
 // Start the service
 func (s *Service) Start() error {
-	s.Args = &goargs.Args{}
-	s.Args.Parse()
 
 	switch s.Args.Command {
 	case "v":
@@ -50,22 +65,12 @@ func (s *Service) Start() error {
 		fmt.Println(s.AppName, "\nVersi", s.Version)
 		break
 	case "run":
-		s.LogService = NewLogService(s.Args.ScriptName)
-		e := s.LogService.Init()
-		if e != nil {
-			return e
-		}
 		e1 := s.run()
 		if e1 != nil {
 			return e1
 		}
 		break
 	case "start":
-		s.LogService = NewLogService(s.Args.ScriptName)
-		e := s.LogService.Init()
-		if e != nil {
-			return e
-		}
 
 		a := s.Args.GetRawArgs()
 		a[0] = "run"
@@ -96,12 +101,6 @@ func (s *Service) Start() error {
 
 		break
 	case "stop":
-		s.LogService = NewLogService(s.Args.ScriptName)
-		e := s.LogService.Init()
-		if e != nil {
-			return e
-		}
-
 		pid, err := ioutil.ReadFile(s.LogService.GetPidFile())
 
 		if err != nil {
@@ -139,12 +138,6 @@ func (s *Service) openDatabase() error {
 	return nil
 }
 func (s *Service) run() error {
-	s.Config = &goconfig.Config{}
-	e := s.Config.Open(s.configFile...)
-	if e != nil {
-		return e
-	}
-
 	e1 := s.openDatabase()
 	if e1 != nil {
 		return e1
