@@ -14,5 +14,3 @@ require (
 	github.com/budimanlai/go-services-ping v0.0.1
 	github.com/eqto/dbm v0.14.6
 )
-
-require github.com/go-sql-driver/mysql v1.6.0 // indirect

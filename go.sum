@@ -4,7 +4,14 @@ github.com/budimanlai/go-config v0.0.1 h1:gmp7ruxdvwBBCcJq7dg+CWV8KHXo+3H1tj79xJ
 github.com/budimanlai/go-config v0.0.1/go.mod h1:0sH0WYBNKewFlo9Tl+Xi9CSwJ5IC7kEEgqvDluPEpXc=
 github.com/budimanlai/go-services-ping v0.0.1 h1:uzSf0agM3IR5ThO+CAdIqVi9qjH2q8+RQjKtAXCU2gs=
 github.com/budimanlai/go-services-ping v0.0.1/go.mod h1:tcyKBW9fICqrbxIF4xVSArb5FL/EdgvbGwmKbbeb7gM=
+github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/eqto/dbm v0.14.6 h1:TCTwnJfUCP11KQfMqw0N1gJ2z/HYLugbM+QSX+uHItM=
 github.com/eqto/dbm v0.14.6/go.mod h1:SjyGk61QPOHqJEdvwlIA8kp1+nPXsU+EvUEBgHO7NBI=
 github.com/go-sql-driver/mysql v1.6.0 h1:BCTh4TKNUYmOmMUcQ3IipzF5prigylS7XXjEkfCHuOE=
 github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
